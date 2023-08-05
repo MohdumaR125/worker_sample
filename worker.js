@@ -1,14 +1,33 @@
-import {parentPort} from "node:worker_threads"
+const { parentPort } = require('worker_threads');
+const fs = require('fs');
 
-parentPort.on("message",(data)=>{
-    let x=0;
-    console.log(data)
-    for(let i=0;i<3000000000;i++){
-       
-        x++;
+// File writing function
+function writeFileAsync(filePath, data) {
+    return new Promise((resolve, reject) => {
+        fs.writeFile(filePath, data, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+// Listen for messages from the main thread
+parentPort.on('message', async (data) => {
+    try {
+        // Perform file writing asynchronously
+        console.log("Wait for three seconds");
+        setTimeout(async () => {
+            await writeFileAsync("./message.txt", data);
+
+            // Notify the main thread about the completion
+            parentPort.postMessage('File writing completed successfully!');
+        }, 3000);
+
+    } catch (error) {
+        // Notify the main thread about the error
+        parentPort.postMessage(`File writing failed: ${error.message}`);
     }
-    parentPort.postMessage("done")
-})
-// parentPort.on("close"()=>{
-//     console.log("closed")
-// })
+});
