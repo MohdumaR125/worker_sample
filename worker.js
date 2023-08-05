@@ -1,14 +1,13 @@
-import {parentPort} from "node:worker_threads"
+import {parentPort} from "worker_threads"
+import fs from "fs"
 
-parentPort.on("message",(data)=>{
-    let x=0;
-    console.log(data)
-    for(let i=0;i<3000000000;i++){
-       
-        x++;
-    }
-    parentPort.postMessage("done")
+parentPort.on("message",(parentData)=>{
+ 
+  console.log("INSIDE WORKER THREAD")
+  fs.appendFileSync('mynewfile1.txt', parentData, function (err) {
+    if (err) throw err;
+    console.log('Saved!');
+  });
+
+  parentPort.postMessage("Read Write Completed");
 })
-// parentPort.on("close"()=>{
-//     console.log("closed")
-// })
