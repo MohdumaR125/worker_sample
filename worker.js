@@ -1,14 +1,16 @@
 import {parentPort} from "node:worker_threads"
 
-parentPort.on("message",(data)=>{
-    let x=0;
+parentPort.on("heavyTask-30",(data)=>{
+    const x="heavyTask-30".split("-")[1];
+    let xNumber = Number(x);
     console.log(data)
-    for(let i=0;i<3000000000;i++){
+    for(let i=0;i<300;i++){
        
-        x++;
+        xNumber++;
     }
-    parentPort.postMessage("done")
+    parentPort.postMessage("xNumber")
 })
-// parentPort.on("close"()=>{
-//     console.log("closed")
-// })
+
+parentPort.on("close", () => {
+    console.log("Closed message from node worker")
+})
