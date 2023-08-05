@@ -1,14 +1,6 @@
 import {parentPort} from "node:worker_threads"
-
+import fs from "fs";
 parentPort.on("message",(data)=>{
-    let x=0;
-    console.log(data)
-    for(let i=0;i<3000000000;i++){
-       
-        x++;
-    }
-    parentPort.postMessage("done")
+fs.writeFileSync("text.txt", data);
+parentPort.postMessage("File Created");
 })
-// parentPort.on("close"()=>{
-//     console.log("closed")
-// })
