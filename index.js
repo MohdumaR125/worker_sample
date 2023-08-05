@@ -1,28 +1,29 @@
 import express from 'express';
-import {Worker} from "node:worker_threads"
+import { Worker } from 'worker_threads';
 
 const app = express();
 const port = 3000;
-const worker =new Worker("./worker.js")
-const worker2 =new Worker("./worker2.js")
-
+const worker = new Worker('./worker.js');
 
 // Define a route for the root URL
+
 app.get('/', (req, res) => {
-    res.send('light task');
+  worker.postMessage(`Hello all, How are you? \n`);
+
+  worker.on('message', (message) => {
+    console.log('Worker task completed:', message);
+    worker.terminate();
+  });
+
+  worker.on('exit', () => {
+    console.log('Worker exited');
+  });
+
+  res.send("<h1 style='text-align:center;'>All read/write opearation is completed<h1>");
+  res.end();
 });
-app.get('/heavy', (req, res) => {
-    
-
-    worker.postMessage("heavy")
-    worker.close()
- 
-   worker.on("message",(x)=>{
-       res.send("heavy task")
-
-   })
-  });
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
+
