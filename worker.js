@@ -1,14 +1,13 @@
-import {parentPort} from "node:worker_threads"
+import {parentPort, workerData} from "worker_threads"
 
-parentPort.on("message",(data)=>{
-    let x=0;
-    console.log(data)
-    for(let i=0;i<3000000000;i++){
-       
-        x++;
-    }
-    parentPort.postMessage("done")
+parentPort.on("message", () => {
+    const x="heavyTask-30".split("-")[1];
+    let xNumber = Number(x);
+    console.log(xNumber, "from worker",workerData.wData);
+
+    parentPort.postMessage("message")
 })
-// parentPort.on("close"()=>{
-//     console.log("closed")
-// })
+
+parentPort.on("close", () => {
+    console.log("Closed message from node worker")
+})
