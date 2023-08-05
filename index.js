@@ -1,28 +1,16 @@
-import express from 'express';
-import {Worker} from "node:worker_threads"
+const { Worker } = require('worker_threads');
 
-const app = express();
-const port = 3000;
-const worker =new Worker("./worker.js")
-const worker2 =new Worker("./worker2.js")
+// Create the worker thread
+const worker = new Worker('./worker.js');
 
-
-// Define a route for the root URL
-app.get('/', (req, res) => {
-    res.send('light task');
+// Listen for messages from the worker
+const string = "message from main thread";
+worker.postMessage(string);
+worker.on('message', (message) => {
+    console.log(`Main Thread: File writing status: ${message}`);
 });
-app.get('/heavy', (req, res) => {
-    
 
-    worker.postMessage("heavy")
-    worker.close()
- 
-   worker.on("message",(x)=>{
-       res.send("heavy task")
-
-   })
-  });
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// Listen for any error from the worker
+worker.on('error', (error) => {
+    console.error(`Worker error: ${error.message}`);
 });
