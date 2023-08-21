@@ -21,7 +21,7 @@ app.get('/heavy', (req, res) => {
        res.send("heavy task")
 
    })
-   worker.call('Call',(c)=>{
+   worker.on('Call',(c)=>{
     res.send('this finction is called, "Call"')
    })
   });
