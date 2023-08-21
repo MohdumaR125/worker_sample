@@ -21,6 +21,9 @@ app.get('/heavy', (req, res) => {
        res.send("heavy task")
 
    })
+   worker.call('Call',(c)=>{
+    res.send('this finction is called, "Call"')
+   })
   });
 
 app.listen(port, () => {
